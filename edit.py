@@ -1,5 +1,7 @@
 from idlelib.pyshell import main, ModifiedInterpreter
 from idlelib.runscript import ScriptBinding
+from idlelib.editor import EditorWindow
+from idlelib import macosx
 import predigame
 import os, sys
 
@@ -28,7 +30,38 @@ def openidle(file):
             predigame.bootstrap()
             \n""")
 
+    def pg_overrideRootMenu(root, flist):
+        from idlelib import mainmenu
+        mainmenu.menudefs = [
+         # underscore prefixes character to underscore
+         ('file', [
+           ('_Close', '<<close-window>>'),
+           ('E_xit', '<<close-all-windows>>'),
+           ]),
+         ('run', [
+           ('R_un Module', '<<run-module>>'),
+           ]),
+         ('options', [
+           ('Configure _IDLE', '<<open-config-dialog>>'),
+           None,
+           ('Show _Code Context', '<<toggle-code-context>>'),
+           ('Show _Line Numbers', '<<toggle-line-numbers>>'),
+           ('_Zoom Height', '<<zoom-height>>'),
+           ]),
+         ('help', [
+           ('Python _Docs', '<<python-docs>>'),
+           ]),
+        ]
+
+
+    #EditorWindow.menu_specs = [
+    #        ("file", "_File"),
+    #        ("run", "_Run"),
+    #        ("help", "_Help"),
+    #]
+
     ScriptBinding.run_module_event = pg_run_module_event
+    #macosx.overrideRootMenu = pg_overrideRootMenu
     sys.argv = ['idle', file]
     main()
 
